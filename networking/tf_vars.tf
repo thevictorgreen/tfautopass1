@@ -10,7 +10,7 @@ variable "region" {
 
 # inf_01_vpc_flowlogs
 variable "environment" {
-  type = string
+  type    = string
   default = "management"
 }
 
@@ -197,7 +197,7 @@ variable "private_subnet_us_east_1e_cidr_block" {
 variable "private_subnet_us_east_1e_map_public_ip_on_launch" {
   description = "MAP PUBLIC IP ON LAUNCH"
   type        = bool
-  default      = false
+  default     = false
 }
 
 variable "private_subnet_us_east_1f_cidr_block" {
