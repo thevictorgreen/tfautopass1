@@ -29,8 +29,14 @@ jobs:
       - run:
           name: Conditional Apply
           command: |
-            terraform -chdir=networking plan -detailed-exitcode
-            echo $?
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=networking plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
 
 workflows:
   deploy_infrastructure:
@@ -41,3 +47,7 @@ workflows:
           context: terraform
           requires:
             - iac_networking_validate
+          filters:
+            branches:
+              only:
+                - master
