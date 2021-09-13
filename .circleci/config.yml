@@ -14,13 +14,13 @@ jobs:
     steps:
       - checkout
       - terraform/init
-          path: networking/
+          path: networking
       - terraform/validate:
-          path: networking/
+          path: networking
       - terraform/fmt:
-          path: networking/
+          path: networking
       - terraform/plan:
-          path: networking/
+          path: networking
 
 workflows:
   iac_networking:
