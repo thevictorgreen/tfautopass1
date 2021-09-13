@@ -158,49 +158,49 @@ resource "aws_security_group_rule" "bastion_security_group_rule_120" {
 
 resource "aws_security_group_rule" "bastion_security_group_rule_140" {
   security_group_id = module.aws-vpc-us-east-1.bastion_security_group_id
-  type        = "ingress"
-  protocol    = "tcp"
-  from_port   = 443
-  to_port     = 443
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 
 resource "aws_security_group_rule" "bastion_security_group_rule_150" {
   security_group_id = module.aws-vpc-us-east-1.bastion_security_group_id
-  type        = "ingress"
-  protocol    = "tcp"
-  from_port   = 943
-  to_port     = 943
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 943
+  to_port           = 943
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 
 resource "aws_security_group_rule" "bastion_security_group_rule_160" {
   security_group_id = module.aws-vpc-us-east-1.bastion_security_group_id
-  type        = "ingress"
-  protocol    = "udp"
-  from_port   = 1194
-  to_port     = 1194
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "ingress"
+  protocol          = "udp"
+  from_port         = 1194
+  to_port           = 1194
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 
 resource "aws_security_group_rule" "bastion_security_group_rule_170" {
   security_group_id = module.aws-vpc-us-east-1.bastion_security_group_id
-  type        = "ingress"
-  protocol    = "icmp"
-  from_port   = -1
-  to_port     = -1
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "ingress"
+  protocol          = "icmp"
+  from_port         = -1
+  to_port           = -1
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 
 resource "aws_security_group_rule" "bastion_security_group_rule_180" {
   security_group_id = module.aws-vpc-us-east-1.bastion_security_group_id
-  type        = "egress"
-  protocol    = -1
-  from_port   = 0
-  to_port     = 0
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "egress"
+  protocol          = -1
+  from_port         = 0
+  to_port           = 0
+  cidr_blocks       = ["0.0.0.0/0"]
 }
