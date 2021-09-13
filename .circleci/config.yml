@@ -22,3 +22,10 @@ workflows:
           path: networking
           requires:
             - terraform/fmt
+      - terraform/plan:
+          checkout: true
+          context: terraform
+          persist-workspace: true
+          path: networking
+          requires:
+            - terraform/validate
