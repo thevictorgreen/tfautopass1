@@ -1,0 +1,53 @@
+version: 2.1
+
+orbs:
+  terraform: circleci/terraform@3.0.0
+
+jobs:
+  iac_networking_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: networking
+      - terraform/fmt:
+          path: networking
+      - terraform/validate:
+          path: networking
+      - terraform/plan:
+          path: networking
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_networking_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: networking
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=networking plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
+workflows:
+  deploy_infrastructure:
+    jobs:
+      - iac_networking_validate:
+          context: terraform
+      - iac_networking_deploy:
+          context: terraform
+          requires:
+            - iac_networking_validate
+          filters:
+            branches:
+              only:
+                - master
