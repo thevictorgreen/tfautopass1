@@ -29,8 +29,8 @@ jobs:
       - run:
           name: Conditional Apply
           command: |
-          terraform plan -chdir networking -detailed-exitcode
-          echo $?
+            terraform plan -chdir networking -detailed-exitcode
+            echo $?
 
 workflows:
   deploy_infrastructure:
