@@ -4,7 +4,7 @@ orbs:
   terraform: circleci/terraform@3.0.0
 
 jobs:
-  iac_networking:
+  iac_networking_validate:
     executor: terraform/default
     steps:
       - checkout
@@ -20,8 +20,24 @@ jobs:
           name: Check Terraform Version
           command: terraform -v
 
+  iac_networking_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: networking
+      - run:
+          name: Conditional Apply
+          command: |
+          terraform plan -chdir networking -detailed-exitcode
+          echo $?
+
 workflows:
   deploy_infrastructure:
     jobs:
-      - iac_networking:
+      - iac_networking_validate:
           context: terraform
+      - iac_networking_deploy:
+          context: terraform
+          requires:
+            - iac_networking_validate
