@@ -16,3 +16,9 @@ workflows:
           path: networking
           requires:
             - terraform/init
+      - terraform/validate:
+          checkout: true
+          context: terraform
+          path: networking
+          requires:
+            - terraform/fmt
