@@ -9,3 +9,8 @@ workflows:
       - terraform/init:
           checkout: true
           context: terraform
+      - terraform/fmt:
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/init
