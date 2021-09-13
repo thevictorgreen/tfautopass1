@@ -16,6 +16,9 @@ jobs:
           path: networking
       - terraform/plan:
           path: networking
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
 
 workflows:
   deploy_infrastructure:
