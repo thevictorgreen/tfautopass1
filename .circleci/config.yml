@@ -13,7 +13,7 @@ jobs:
     executor: terraform/default
     steps:
       - checkout
-      - terraform/init
+      - terraform/init:
           path: networking
       - terraform/validate:
           path: networking
