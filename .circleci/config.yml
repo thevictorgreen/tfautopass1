@@ -155,15 +155,15 @@ workflows:
                 - master
       - iac_compute_validate:
            context: terraform
-            requires:
-              - iac_networking_deploy
+           requires:
+             - iac_networking_deploy
       - iac_compute_deploy:
            context:
              - terraform
              - aws_keypair
-            requires:
-              - iac_compute_validate
-            filters:
-              branches:
-                only:
-                  - master
+           requires:
+             - iac_compute_validate
+           filters:
+             branches:
+               only:
+                 - master
