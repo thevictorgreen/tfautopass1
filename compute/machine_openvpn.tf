@@ -36,7 +36,7 @@ resource "aws_instance" "openvpn-machine" {
   instance_type = var.instance_type["medium"]
 
   key_name  = var.keypairs["devops"]
-  subnet_id = var.subnets[ var.openvpn_machine_subnets[ each.value ] ]
+  subnet_id = var.subnets[var.openvpn_machine_subnets[each.value]]
 
   vpc_security_group_ids = [
     var.secgroups["management-useast1-bastion-security-group"]
@@ -90,10 +90,10 @@ resource "aws_route53_record" "openvpn-machine-reverse-record" {
   for_each = toset(var.openvpn_machine_names)
   zone_id  = data.aws_route53_zone.dns_reverse_zone.zone_id
 
-  name     = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
-  records  = ["${each.value}.${data.aws_route53_zone.dns_private_zone.name}"]
-  type     = "PTR"
-  ttl      = "300"
+  name    = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
+  records = ["${each.value}.${data.aws_route53_zone.dns_private_zone.name}"]
+  type    = "PTR"
+  ttl     = "300"
 }
 
 
