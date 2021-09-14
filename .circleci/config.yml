@@ -38,16 +38,196 @@ jobs:
                fi
             fi
 
+  iac_compute_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: compute
+      - terraform/fmt:
+          path: compute
+      - terraform/validate:
+          path: compute
+      - terraform/plan:
+          path: compute
+      - run:
+          name: Check Terraform Version
+          command: |
+            terraform -v
+
+  iac_compute_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: compute
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=compute plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 echo ${PRI_01} > devops.pem
+                 echo ${PRI_02} >> devops.pem
+                 echo ${PRI_03} >> devops.pem
+                 echo ${PRI_04} >> devops.pem
+                 echo ${PRI_05} >> devops.pem
+                 echo ${PRI_06} >> devops.pem
+                 echo ${PRI_07} >> devops.pem
+                 echo ${PRI_08} >> devops.pem
+                 echo ${PRI_09} >> devops.pem
+                 echo ${PRI_10} >> devops.pem
+                 echo ${PRI_11} >> devops.pem
+                 echo ${PRI_12} >> devops.pem
+                 echo ${PRI_13} >> devops.pem
+                 echo ${PRI_14} >> devops.pem
+                 echo ${PRI_15} >> devops.pem
+                 echo ${PRI_16} >> devops.pem
+                 echo ${PRI_17} >> devops.pem
+                 echo ${PRI_18} >> devops.pem
+                 echo ${PRI_19} >> devops.pem
+                 echo ${PRI_20} >> devops.pem
+                 echo ${PRI_21} >> devops.pem
+                 echo ${PRI_22} >> devops.pem
+                 echo ${PRI_23} >> devops.pem
+                 echo ${PRI_24} >> devops.pem
+                 echo ${PRI_25} >> devops.pem
+                 echo ${PRI_26} >> devops.pem
+                 echo ${PRI_27} >> devops.pem
+                 ls -la
+                 cat devops.pem
+                 mv devops.pem compute/
+                 ls -la
+                 ls -la compute/
+                 terraform -chdir=compute apply -auto-approve
+               fi
+            fi
+
+  iac_data_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: data
+      - terraform/fmt:
+          path: data
+      - terraform/validate:
+          path: data
+      - terraform/plan:
+          path: data
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_data_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: data
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=data plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
+  iac_analytics_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: analytics
+      - terraform/fmt:
+          path: analytics
+      - terraform/validate:
+          path: analytics
+      - terraform/plan:
+          path: analytics
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_analytics_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: analytics
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=analytics plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
 workflows:
-  deploy_infrastructure:
+  validate_infrastructure:
     jobs:
       - iac_networking_validate:
           context: terraform
+          filters:
+            branches:
+              only:
+                - /^feature.*/
+                - develop
+      - iac_compute_validate:
+           context:
+             - terraform
+             - aws_keypair
+           filters:
+             branches:
+               only:
+                 - /^feature.*/
+                 - develop
+           requires:
+             - iac_networking_validate
+      - iac_data_validate:
+           context: terraform
+           filters:
+             branches:
+               only:
+                 - /^feature.*/
+                 - develop
+           requires:
+             - iac_compute_validate
+      - iac_analytics_validate:
+           context: terraform
+           filters:
+             branches:
+               only:
+                 - /^feature.*/
+                 - develop
+           requires:
+             - iac_data_validate
+
+  deploy_infrastructure:
+    jobs:
       - iac_networking_deploy:
           context: terraform
-          requires:
-            - iac_networking_validate
           filters:
             branches:
               only:
                 - master
+      - iac_compute_deploy:
+          context:
+            - terraform
+            - aws_keypair
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - iac_networking_deploy
