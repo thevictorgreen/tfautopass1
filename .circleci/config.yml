@@ -66,7 +66,7 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
-               terraform -chdir=compute plan -detailed-exitcode
+               terraform -chdir=compute plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
                  echo ${PRI_01} > devops.pem
@@ -101,7 +101,7 @@ jobs:
                  mv devops.pem compute/
                  ls -la
                  ls -la compute/
-                 terraform -chdir=compute apply -auto-approve
+                 terraform -chdir=compute apply vdigi-plan -auto-approve
                fi
             fi
 

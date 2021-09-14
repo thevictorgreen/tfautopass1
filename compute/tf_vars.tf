@@ -319,7 +319,7 @@ variable "public_key" {
 }
 
 variable "private_key" {
-  default = "z/devops.pem"
+  default = "devops.pem"
 }
 
 variable "ansible_user" {
