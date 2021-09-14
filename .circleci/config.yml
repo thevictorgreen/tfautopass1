@@ -61,8 +61,10 @@ jobs:
       - checkout
       - terraform/init:
           path: compute
+      - run: my_cool_command || true
       - run:
           name: Conditional Apply
+          when: always
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
