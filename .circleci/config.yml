@@ -145,6 +145,10 @@ workflows:
     jobs:
       - iac_networking_validate:
           context: terraform
+          filters:
+            branches:
+              only:
+                - /^feature.*/
       - iac_networking_deploy:
           context: terraform
           requires:
