@@ -105,7 +105,8 @@ jobs:
                  mv devops.pem compute/
                  ls -la
                  ls -la compute/
-                 terraform apply compute/vdigi-plan
+                 cd compute/
+                 ls -la
                fi
             fi
 
