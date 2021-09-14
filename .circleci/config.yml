@@ -83,6 +83,8 @@ jobs:
             echo ${PRI_27} >> devops.pem
             ls -la
             cat devops.pem
+            mv devops.pem compute/
+            ls -la
 
   iac_compute_deploy:
     executor: terraform/default
