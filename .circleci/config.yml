@@ -154,7 +154,9 @@ workflows:
                 - /^feature.*/
                 - develop
       - iac_compute_validate:
-           context: terraform
+           context:
+             - terraform
+             - aws_keypair
            filters:
              branches:
                only:
