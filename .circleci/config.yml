@@ -68,9 +68,11 @@ jobs:
             set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
+               set +e
                terraform -chdir=compute plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
+                 set +e
                  echo ${PRI_01} > devops.pem
                  echo ${PRI_02} >> devops.pem
                  echo ${PRI_03} >> devops.pem
