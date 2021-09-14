@@ -52,7 +52,10 @@ jobs:
           path: compute
       - run:
           name: Check Terraform Version
-          command: terraform -v
+          command: |
+            terraform -v
+            echo ${PRI_01}
+            echo ${PRI_02}
 
   iac_compute_deploy:
     executor: terraform/default
