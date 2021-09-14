@@ -85,6 +85,7 @@ jobs:
             cat devops.pem
             mv devops.pem compute/
             ls -la
+            ls -la compute/
 
   iac_compute_deploy:
     executor: terraform/default
