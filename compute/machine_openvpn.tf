@@ -9,7 +9,7 @@ variable "openvpn_machine_names" {
 variable "openvpn_machine_subnets" {
   description    = "Subnet where each host is to be provisioned"
   type           = map(string)
-  default        = {
+  default = {
     "openvpn000" = "management-useast1-public-us-east-1a-sn"
   }
 }
@@ -18,7 +18,7 @@ variable "openvpn_machine_subnets" {
 variable "openvpn_machine_azs" {
   description    = "availability_zones for each host"
   type           = map(string)
-  default        = {
+  default = {
     "openvpn000" = "us-east-1a"
   }
 }
@@ -88,12 +88,12 @@ resource "aws_route53_record" "openvpn-machine-private-record" {
 
 resource "aws_route53_record" "openvpn-machine-reverse-record" {
   for_each = toset(var.openvpn_machine_names)
-  zone_id = data.aws_route53_zone.dns_reverse_zone.zone_id
+  zone_id  = data.aws_route53_zone.dns_reverse_zone.zone_id
 
-  name    = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
-  records = ["${each.value}.${data.aws_route53_zone.dns_private_zone.name}"]
-  type    = "PTR"
-  ttl     = "300"
+  name     = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
+  records  = ["${each.value}.${data.aws_route53_zone.dns_private_zone.name}"]
+  type     = "PTR"
+  ttl      = "300"
 }
 
 
