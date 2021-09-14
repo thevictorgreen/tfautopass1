@@ -38,6 +38,108 @@ jobs:
                fi
             fi
 
+  iac_compute_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: compute
+      - terraform/fmt:
+          path: compute
+      - terraform/validate:
+          path: compute
+      - terraform/plan:
+          path: compute
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_compute_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: compute
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=compute plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
+  iac_data_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: data
+      - terraform/fmt:
+          path: data
+      - terraform/validate:
+          path: data
+      - terraform/plan:
+          path: data
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_data_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: data
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=data plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
+  iac_analytics_validate:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: analytics
+      - terraform/fmt:
+          path: analytics
+      - terraform/validate:
+          path: analytics
+      - terraform/plan:
+          path: analytics
+      - run:
+          name: Check Terraform Version
+          command: terraform -v
+
+  iac_analytics_deploy:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: analytics
+      - run:
+          name: Conditional Apply
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+               terraform -chdir=analytics plan -detailed-exitcode
+               if [ $? -eq 2 ]
+               then
+                 terraform apply -auto-approve
+               fi
+            fi
+
 workflows:
   deploy_infrastructure:
     jobs:
@@ -51,3 +153,17 @@ workflows:
             branches:
               only:
                 - master
+      - iac_compute_validate:
+           context: terraform
+            requires:
+              - iac_networking_deploy
+      - iac_compute_deploy:
+           context:
+             - terraform
+             - aws_keypair
+            requires:
+              - iac_compute_validate
+            filters:
+              branches:
+                only:
+                  - master
