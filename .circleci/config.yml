@@ -141,7 +141,7 @@ jobs:
             fi
 
 workflows:
-  deploy_infrastructure:
+  validate_infrastructure:
     jobs:
       - iac_networking_validate:
           context: terraform
@@ -149,25 +149,30 @@ workflows:
             branches:
               only:
                 - /^feature.*/
+      - iac_compute_validate:
+           context: terraform
+           filters:
+             branches:
+               only:
+                 - /^feature.*/
+           requires:
+             - iac_networking_validate
+
+  deploy_infrastructure:
+    jobs:
       - iac_networking_deploy:
           context: terraform
-          requires:
-            - iac_networking_validate
           filters:
             branches:
               only:
                 - master
-      - iac_compute_validate:
-           context: terraform
-           requires:
-             - iac_networking_deploy
       - iac_compute_deploy:
-           context:
-             - terraform
-             - aws_keypair
-           requires:
-             - iac_compute_validate
-           filters:
-             branches:
-               only:
-                 - master
+          context:
+            - terraform
+            - aws_keypair
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - iac_networking_deploy
