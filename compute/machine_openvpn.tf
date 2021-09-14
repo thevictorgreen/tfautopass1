@@ -98,18 +98,18 @@ resource "aws_route53_record" "openvpn-machine-reverse-record" {
 
 
 resource "aws_ebs_volume" "openvpn-volume1" {
-  for_each = toset(var.openvpn_machine_names)
-  availability_zone = var.openvpn_machine_azs[ each.value ]
-  type = "gp2"
-  size = 80
+  for_each          = toset(var.openvpn_machine_names)
+  availability_zone = var.openvpn_machine_azs[each.value]
+  type              = "gp2"
+  size              = 80
 }
 
 
 resource "aws_volume_attachment" "openvpn-volume1-attachment" {
   for_each    = toset(var.openvpn_machine_names)
   device_name = "/dev/xvdb"
-  instance_id = aws_instance.openvpn-machine[ each.value ].id
-  volume_id   = aws_ebs_volume.openvpn-volume1[ each.value ].id
+  instance_id = aws_instance.openvpn-machine[each.value].id
+  volume_id   = aws_ebs_volume.openvpn-volume1[each.value].id
 }
 
 
