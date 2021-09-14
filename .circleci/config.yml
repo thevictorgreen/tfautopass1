@@ -100,13 +100,8 @@ jobs:
                  echo ${PRI_25} >> devops.pem
                  echo ${PRI_26} >> devops.pem
                  echo ${PRI_27} >> devops.pem
-                 ls -la
-                 cat devops.pem
                  mv devops.pem compute/
-                 ls -la
-                 ls -la compute/
                  cd compute/
-                 ls -la
                  terraform apply vdigi-plan
                fi
             fi
@@ -136,12 +131,16 @@ jobs:
       - run:
           name: Conditional Apply
           command: |
+            set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
-               terraform -chdir=data plan -detailed-exitcode
+               set +e
+               terraform -chdir=data plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
-                 terraform apply -auto-approve
+                 set +e
+                 cd data/
+                 terraform apply vdigi-plan
                fi
             fi
 
@@ -170,12 +169,16 @@ jobs:
       - run:
           name: Conditional Apply
           command: |
+            set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
-               terraform -chdir=analytics plan -detailed-exitcode
+               set +e
+               terraform -chdir=analytics plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
-                 terraform apply -auto-approve
+                 set +e
+                 cd analytics/
+                 terraform apply vdigi-plan
                fi
             fi
 
@@ -237,3 +240,19 @@ workflows:
                 - master
           requires:
             - iac_networking_deploy
+      - iac_data_deploy:
+          context: terraform
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - iac_compute_deploy
+      - iac_analytics_deploy:
+          context: terraform
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - iac_data_deploy
