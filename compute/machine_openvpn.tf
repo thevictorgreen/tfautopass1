@@ -35,8 +35,8 @@ resource "aws_instance" "openvpn-machine" {
   ami           = var.amis["ubuntu_18_04"]
   instance_type = var.instance_type["medium"]
 
-  key_name      = var.keypairs["devops"]
-  subnet_id     = var.subnets[ var.openvpn_machine_subnets[ each.value ] ]
+  key_name  = var.keypairs["devops"]
+  subnet_id = var.subnets[ var.openvpn_machine_subnets[ each.value ] ]
 
   vpc_security_group_ids = [
     var.secgroups["management-useast1-bastion-security-group"]
@@ -82,7 +82,7 @@ resource "aws_route53_record" "openvpn-machine-private-record" {
   type     = "A"
   ttl      = "300"
 
-  records  = [aws_instance.openvpn-machine[each.value].private_ip]
+  records = [aws_instance.openvpn-machine[each.value].private_ip]
 }
 
 
