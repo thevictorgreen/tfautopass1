@@ -105,7 +105,7 @@ jobs:
                  mv devops.pem compute/
                  ls -la
                  ls -la compute/
-                 terraform apply compute/vdigi-plan -auto-approve
+                 terraform apply compute/vdigi-plan
                fi
             fi
 
