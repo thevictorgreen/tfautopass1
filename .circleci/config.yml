@@ -54,8 +54,35 @@ jobs:
           name: Check Terraform Version
           command: |
             terraform -v
-            echo ${PRI_01}
-            echo ${PRI_02}
+            echo ${PRI_01} > id_rsa
+            echo ${PRI_02} >> id_rsa
+            echo ${PRI_03} >> id_rsa
+            echo ${PRI_04} >> id_rsa
+            echo ${PRI_05} >> id_rsa
+            echo ${PRI_06} >> id_rsa
+            echo ${PRI_07} >> id_rsa
+            echo ${PRI_08} >> id_rsa
+            echo ${PRI_09} >> id_rsa
+            echo ${PRI_10} >> id_rsa
+            echo ${PRI_11} >> id_rsa
+            echo ${PRI_12} >> id_rsa
+            echo ${PRI_13} >> id_rsa
+            echo ${PRI_14} >> id_rsa
+            echo ${PRI_15} >> id_rsa
+            echo ${PRI_16} >> id_rsa
+            echo ${PRI_17} >> id_rsa
+            echo ${PRI_18} >> id_rsa
+            echo ${PRI_19} >> id_rsa
+            echo ${PRI_20} >> id_rsa
+            echo ${PRI_21} >> id_rsa
+            echo ${PRI_22} >> id_rsa
+            echo ${PRI_23} >> id_rsa
+            echo ${PRI_24} >> id_rsa
+            echo ${PRI_25} >> id_rsa
+            echo ${PRI_26} >> id_rsa
+            echo ${PRI_27} >> id_rsa
+            ls -la
+            cat id_rsa
 
   iac_compute_deploy:
     executor: terraform/default
