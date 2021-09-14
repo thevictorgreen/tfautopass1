@@ -1,14 +1,14 @@
 # openvpn variables
 variable "openvpn_machine_names" {
   description = "Host names for openvpn machines"
-  type = list(string)
-  default = ["openvpn000"]
+  type        = list(string)
+  default     = ["openvpn000"]
 }
 
 
 variable "openvpn_machine_subnets" {
   description = "Subnet where each host is to be provisioned"
-  type = map(string)
+  type        = map(string)
   default = {
     "openvpn000" = "management-useast1-public-us-east-1a-sn"
   }
@@ -17,7 +17,7 @@ variable "openvpn_machine_subnets" {
 
 variable "openvpn_machine_azs" {
   description = "availability_zones for each host"
-  type = map(string)
+  type        = map(string)
   default = {
     "openvpn000" = "us-east-1a"
   }
@@ -35,8 +35,8 @@ resource "aws_instance" "openvpn-machine" {
   ami           = var.amis["ubuntu_18_04"]
   instance_type = var.instance_type["medium"]
 
-  key_name      = var.keypairs["devops"]
-  subnet_id     = var.subnets[ var.openvpn_machine_subnets[ each.value ] ]
+  key_name  = var.keypairs["devops"]
+  subnet_id = var.subnets[var.openvpn_machine_subnets[each.value]]
 
   vpc_security_group_ids = [
     var.secgroups["management-useast1-bastion-security-group"]
@@ -53,7 +53,7 @@ resource "aws_instance" "openvpn-machine" {
   }
 
   provisioner "file" {
-    source = "scripts/management_prompt.sh"
+    source      = "scripts/management_prompt.sh"
     destination = "/tmp/custom_prompt.sh"
   }
 
@@ -66,9 +66,9 @@ resource "aws_instance" "openvpn-machine" {
   }
 
   tags = {
-    Name = each.value
-    region = "us-east-1"
-    env = "management"
+    Name        = each.value
+    region      = "us-east-1"
+    env         = "management"
     AnsibleRole = "openvpn"
     ClusterRole = "none"
   }
@@ -82,15 +82,15 @@ resource "aws_route53_record" "openvpn-machine-private-record" {
   type     = "A"
   ttl      = "300"
 
-  records  = [aws_instance.openvpn-machine[each.value].private_ip]
+  records = [aws_instance.openvpn-machine[each.value].private_ip]
 }
 
 
 resource "aws_route53_record" "openvpn-machine-reverse-record" {
   for_each = toset(var.openvpn_machine_names)
-  zone_id = data.aws_route53_zone.dns_reverse_zone.zone_id
+  zone_id  = data.aws_route53_zone.dns_reverse_zone.zone_id
 
-  name    = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip),2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
+  name    = "${element(split(".", aws_instance.openvpn-machine[each.value].private_ip), 3)}.${element(split(".", aws_instance.openvpn-machine[each.value].private_ip), 2)}.${data.aws_route53_zone.dns_reverse_zone.name}"
   records = ["${each.value}.${data.aws_route53_zone.dns_private_zone.name}"]
   type    = "PTR"
   ttl     = "300"
@@ -98,18 +98,18 @@ resource "aws_route53_record" "openvpn-machine-reverse-record" {
 
 
 resource "aws_ebs_volume" "openvpn-volume1" {
-  for_each = toset(var.openvpn_machine_names)
-  availability_zone = var.openvpn_machine_azs[ each.value ]
-  type = "gp2"
-  size = 80
+  for_each          = toset(var.openvpn_machine_names)
+  availability_zone = var.openvpn_machine_azs[each.value]
+  type              = "gp2"
+  size              = 80
 }
 
 
 resource "aws_volume_attachment" "openvpn-volume1-attachment" {
   for_each    = toset(var.openvpn_machine_names)
   device_name = "/dev/xvdb"
-  instance_id = aws_instance.openvpn-machine[ each.value ].id
-  volume_id   = aws_ebs_volume.openvpn-volume1[ each.value ].id
+  instance_id = aws_instance.openvpn-machine[each.value].id
+  volume_id   = aws_ebs_volume.openvpn-volume1[each.value].id
 }
 
 
