@@ -107,7 +107,7 @@ jobs:
                  ls -la compute/
                  cd compute/
                  ls -la
-                 terraform apply vdigi-plan -auto-approve
+                 terraform apply vdigi-plan
                fi
             fi
 
