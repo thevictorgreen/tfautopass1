@@ -149,12 +149,14 @@ workflows:
             branches:
               only:
                 - /^feature.*/
+                - develop
       - iac_compute_validate:
            context: terraform
            filters:
              branches:
                only:
                  - /^feature.*/
+                 - develop
            requires:
              - iac_networking_validate
       - iac_data_validate:
@@ -163,6 +165,7 @@ workflows:
              branches:
                only:
                  - /^feature.*/
+                 - develop
            requires:
              - iac_compute_validate
       - iac_analytics_validate:
@@ -171,9 +174,10 @@ workflows:
              branches:
                only:
                  - /^feature.*/
+                 - develop
            requires:
              - iac_data_validate
-          
+
   deploy_infrastructure:
     jobs:
       - iac_networking_deploy:
