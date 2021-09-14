@@ -61,11 +61,11 @@ jobs:
       - checkout
       - terraform/init:
           path: compute
-      - run: my_cool_command || true
       - run:
           name: Conditional Apply
           when: always
           command: |
+            set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
                terraform -chdir=compute plan -out vdigi-plan -detailed-exitcode
