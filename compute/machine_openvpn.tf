@@ -7,8 +7,8 @@ variable "openvpn_machine_names" {
 
 
 variable "openvpn_machine_subnets" {
-  description    = "Subnet where each host is to be provisioned"
-  type           = map(string)
+  description = "Subnet where each host is to be provisioned"
+  type        = map(string)
   default = {
     "openvpn000" = "management-useast1-public-us-east-1a-sn"
   }
@@ -16,8 +16,8 @@ variable "openvpn_machine_subnets" {
 
 
 variable "openvpn_machine_azs" {
-  description    = "availability_zones for each host"
-  type           = map(string)
+  description = "availability_zones for each host"
+  type        = map(string)
   default = {
     "openvpn000" = "us-east-1a"
   }
@@ -53,7 +53,7 @@ resource "aws_instance" "openvpn-machine" {
   }
 
   provisioner "file" {
-    source = "scripts/management_prompt.sh"
+    source      = "scripts/management_prompt.sh"
     destination = "/tmp/custom_prompt.sh"
   }
 
@@ -66,9 +66,9 @@ resource "aws_instance" "openvpn-machine" {
   }
 
   tags = {
-    Name = each.value
-    region = "us-east-1"
-    env = "management"
+    Name        = each.value
+    region      = "us-east-1"
+    env         = "management"
     AnsibleRole = "openvpn"
     ClusterRole = "none"
   }
