@@ -29,12 +29,16 @@ jobs:
       - run:
           name: Conditional Apply
           command: |
+            set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
-               terraform -chdir=networking plan -detailed-exitcode
+               set +e
+               terraform -chdir=networking plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
-                 terraform apply -auto-approve
+                 set +e
+                 cd networking/
+                 terraform apply vdigi-plan
                fi
             fi
 
