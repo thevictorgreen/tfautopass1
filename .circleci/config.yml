@@ -63,12 +63,16 @@ jobs:
           path: compute
       - run:
           name: Conditional Apply
+          when: always
           command: |
+            set +e
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
+               set +e
                terraform -chdir=compute plan -out vdigi-plan -detailed-exitcode
                if [ $? -eq 2 ]
                then
+                 set +e
                  echo ${PRI_01} > devops.pem
                  echo ${PRI_02} >> devops.pem
                  echo ${PRI_03} >> devops.pem
@@ -101,7 +105,9 @@ jobs:
                  mv devops.pem compute/
                  ls -la
                  ls -la compute/
-                 terraform -chdir=compute apply vdigi-plan -auto-approve
+                 cd compute/
+                 ls -la
+                 terraform apply vdigi-plan
                fi
             fi
 
