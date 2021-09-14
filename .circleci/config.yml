@@ -54,7 +54,7 @@ jobs:
           name: Check Terraform Version
           command: |
             terraform -v
-            echo ${PRI_01} > id_rsa
+            echo ${PRI_01} > devops.pem
             echo ${PRI_02} >> id_rsa
             echo ${PRI_03} >> id_rsa
             echo ${PRI_04} >> id_rsa
@@ -81,8 +81,9 @@ jobs:
             echo ${PRI_25} >> id_rsa
             echo ${PRI_26} >> id_rsa
             echo ${PRI_27} >> id_rsa
-            ls -la
-            cat id_rsa
+            mv devops.pem compute
+            ls -la compute
+            cat compute/devops.pem
 
   iac_compute_deploy:
     executor: terraform/default
